@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Script #By Bodrosik</title>
+<style>
+    /* Основні стилі сторінки */
+    body {
+        margin: 0;
+        font-family: 'Courier New', Courier, monospace;
+        background-color: #121212;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    /* Логотип */
+    .logo {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+        color: #00c8ff;
+        text-shadow: 1px 1px 5px #000;
+    }
+
+    /* Контейнер для скриптів */
+    .script-container {
+        width: 100%;
+        max-width: 900px;
+        background-color: #1e1e1e;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        overflow-x: auto;
+    }
+
+    /* Назва скрипта */
+    .script-title {
+        font-size: 20px;
+        font-weight: bold;
+        color: #00ff88;
+        margin-bottom: 10px;
+    }
+
+    /* Код скрипта */
+    pre {
+        background-color: #2b2b2b;
+        padding: 15px;
+        border-radius: 8px;
+        color: #ffffff;
+        overflow-x: auto;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    /* Підпис */
+    .signature {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #888888;
+        text-align: right;
+    }
+
+    /* Адаптивність */
+    @media (max-width: 768px) {
+        .logo {
+            font-size: 24px;
+        }
+        pre {
+            font-size: 13px;
+        }
+    }
+    @media (max-width: 480px) {
+        .logo {
+            font-size: 20px;
+        }
+        pre {
+            font-size: 12px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="logo">Script #By Bodrosik</div>
+
+<div class="script-container">
+    <div class="script-title">Скрипт 1</div>
+    <pre>
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
+
+local ADMIN_USERNAME = "BodrosikXX"
+
+if LocalPlayer.Name ~= ADMIN_USERNAME then
+	return
+end
+
+local adminGui = Instance.new("ScreenGui")
+adminGui.Name = "AdminPanelGui"
+adminGui.ResetOnSpawn = false
+adminGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+local panel = Instance.new("Frame")
+panel.Name = "Panel"
+panel.Size = UDim2.new(0, 400, 0, 300)
+panel.Position = UDim2.new(0.5, -200, 0.5, -150)
+panel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+panel.BorderSizePixel = 0
+panel.AnchorPoint = Vector2.new(0.5, 0.5)
+panel.Parent = adminGui
+
+local title = Instance.new("TextLabel")
+title.Text = "ADMIN PANEL #By Bodrosik"
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.GothamBold
+title.TextSize = 28
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Parent = panel
+
+-- Додаткові елементи GUI ...
+    </pre>
+    <div class="signature">#By Bodrosik</div>
+</div>
+
+<div class="script-container">
+    <div class="script-title">Скрипт 2</div>
+    <pre>
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local remote = ReplicatedStorage:WaitForChild("AdminPanelEvent")
+
+local function showAd(message)
+	local gui = LocalPlayer:WaitForChild("PlayerGui")
+	local adGui = gui:FindFirstChild("AdMessageGui")
+	if not adGui then
+		adGui = Instance.new("ScreenGui")
+		adGui.Name = "AdMessageGui"
+		adGui.ResetOnSpawn = false
+		adGui.Parent = gui
+	end
+	local label = adGui:FindFirstChild("AdLabel")
+	if not label then
+		label = Instance.new("TextLabel")
+		label.Name = "AdLabel"
+		label.Size = UDim2.new(0.7, 0, 0, 60)
+		label.Position = UDim2.new(0.15, 0, 0, 20)
+		label.BackgroundColor3 = Color3.fromRGB(0,0,0)
+		label.BackgroundTransparency = 0.3
+		label.TextColor3 = Color3.fromRGB(255,255,0)
+		label.Font = Enum.Font.GothamBold
+		label.TextSize = 32
+		label.TextStrokeTransparency = 0.3
+		label.TextStrokeColor3 = Color3.fromRGB(0,0,0)
+		label.TextWrapped = true
+		label.Parent = adGui
+	end
+	label.Text = message
+	label.Visible = true
+	task.wait(8)
+	label.Visible = false
+end
+
+remote.OnClientEvent:Connect(function(data)
+	if data and data.action == "broadcast" and data.message then
+		showAd(data.message)
+	end
+end)
+    </pre>
+    <div class="signature">#By Bodrosik</div>
+</div>
+
+<div class="script-container">
+    <div class="script-title">Скрипт 3</div>
+    <pre>
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+local ADMIN_USERNAME = "BodrosikXX"
+
+local remote = ReplicatedStorage:WaitForChild("AdminPanelEvent")
+
+remote.OnServerEvent:Connect(function(player, data)
+	if not data or type(data) ~= "table" then return end
+	if player.Name ~= ADMIN_USERNAME then return end
+
+	if data.action == "broadcast" and data.message then
+		for _, plr in Players:GetPlayers() do
+			remote:FireClient(plr, {action="broadcast", message=data.message})
+		end
+	elseif data.action == "give" and data.player and data.amount then
+		for _, plr in Players:GetPlayers() do
+			if plr.Name == data.player then
+				local leaderstats = plr:FindFirstChild("leaderstats")
+				if leaderstats then
+					local balance = leaderstats:FindFirstChild("Balance")
+					if balance then
+						balance.Value = balance.Value + data.amount
+					end
+				end
+			end
+		end
+	end
+end)
+    </pre>
+    <div class="signature">#By Bodrosik</div>
+</div>
+
+</body>
+</html>
