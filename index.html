@@ -1,275 +1,212 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Script #By Bodrosik</title>
+<title>#ByBodrosikScript — Туторы</title>
 <style>
-body {
-    margin: 0;
-    font-family: 'Courier New', Courier, monospace;
-    background-color: #121212;
+  body {
+    background: radial-gradient(circle at top left, #101014, #0a0a0c);
+    font-family: "Poppins", sans-serif;
     color: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-}
+    margin: 0;
+    padding: 40px;
+  }
 
-.logo {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #00c8ff;
-    text-shadow: 1px 1px 5px #000;
+  h1 {
     text-align: center;
-}
+    font-size: 36px;
+    margin-bottom: 40px;
+    color: #00ffc6;
+    text-shadow: 0 0 12px #00ffc6;
+  }
 
-.folder {
-    width: 100%;
-    max-width: 900px;
-    background-color: #1e1e1e;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    margin-bottom: 20px;
-}
+  .container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
 
-.folder-header {
-    padding: 15px 20px;
+  .folder {
+    background: #1a1a1d;
+    border-radius: 14px;
+    padding: 20px;
     cursor: pointer;
-    background-color: #2b2b2b;
-    font-size: 20px;
-    font-weight: bold;
-    color: #00c8ff;
+    box-shadow: 0 0 15px #000;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .folder:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 20px #00ffc6;
+  }
+
+  .folder-title {
+    font-weight: 600;
+    font-size: 18px;
+    color: #00ffc6;
+  }
+
+  .folder-content {
+    display: none;
+    margin-top: 15px;
+    background: #111113;
+    border-radius: 10px;
+    padding: 15px;
+    line-height: 1.5;
+    font-size: 15px;
+    box-shadow: inset 0 0 10px #000;
+  }
+
+  .copy-block {
+    margin-top: 20px;
+    border-top: 1px solid #222;
+    padding-top: 10px;
+  }
+
+  .copy-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    user-select: none;
-}
-
-.folder-header:hover {
-    background-color: #3a3a3a;
-}
-
-.folder-content {
-    display: none;
-    padding: 20px;
-    background-color: #1e1e1e;
-    border-top: 1px solid #3a3a3a;
-}
-
-.subfolder {
-    margin-bottom: 15px;
-}
-
-.subfolder-title {
-    font-size: 18px;
-    font-weight: bold;
-    color: #00ff88;
-    margin-bottom: 10px;
-}
-
-pre {
-    background-color: #2b2b2b;
-    padding: 15px;
+    background: #151517;
     border-radius: 8px;
-    color: #fff;
-    overflow-x: auto;
+    padding: 10px;
+    margin-top: 8px;
+  }
+
+  .copy-text {
+    color: #ccc;
     font-size: 14px;
-    line-height: 1.4;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    margin: 0;
-}
+  }
 
-.copy-btn {
-    background-color: #00c8ff;
-    color: #121212;
+  .copy-btn {
+    background: #00ffc6;
     border: none;
-    padding: 6px 12px;
+    color: #000;
+    padding: 5px 10px;
     border-radius: 6px;
-    font-weight: bold;
     cursor: pointer;
-    margin-top: 10px;
+    font-weight: bold;
     transition: 0.2s;
-}
+  }
 
-.copy-btn:hover {
-    background-color: #00a1d6;
-}
+  .copy-btn:hover {
+    background: #00a382;
+  }
 
-@media (max-width: 768px) {
-    .logo { font-size: 24px; }
-    pre { font-size: 13px; }
-}
+  .footer {
+    text-align: center;
+    margin-top: 60px;
+    font-size: 14px;
+    color: #777;
+  }
 
-@media (max-width: 480px) {
-    .logo { font-size: 20px; }
-    pre { font-size: 12px; }
-}
+  .logo {
+    color: #00ffc6;
+    font-weight: 700;
+  }
 </style>
 </head>
 <body>
 
-<div class="logo">Script #By Bodrosik</div>
+<h1>#ByBodrosikScript — Туторы</h1>
+<div class="container" id="folderContainer"></div>
 
-<div class="folder">
-    <div class="folder-header" onclick="toggleFolder(this)">Админ Панель (Нажми чтобы открыть) ▼</div>
-    <div class="folder-content">
-
-        <!-- Скрипт 1 (LocalScript в StarterGui) -->
-        <div class="subfolder">
-            <div class="subfolder-title">Скрипт 1(LocalScript в StarterGui</div>
-            <pre id="code-0">
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local LocalPlayer = Players.LocalPlayer
-
-local ADMIN_USERNAME = "BodrosikXX"
-
-if LocalPlayer.Name ~= ADMIN_USERNAME then
-    return
-end
-
-local adminGui = Instance.new("ScreenGui")
-adminGui.Name = "AdminPanelGui"
-adminGui.ResetOnSpawn = false
-adminGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
-
-local panel = Instance.new("Frame")
-panel.Name = "Panel"
-panel.Size = UDim2.new(0, 400, 0, 300)
-panel.Position = UDim2.new(0.5, -200, 0.5, -150)
-panel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-panel.BorderSizePixel = 0
-panel.AnchorPoint = Vector2.new(0.5, 0.5)
-panel.Parent = adminGui
-
-local title = Instance.new("TextLabel")
-title.Text = "ADMIN PANEL #By Bodrosik"
-title.Size = UDim2.new(1, 0, 0, 40)
-title.BackgroundTransparency = 1
-title.Font = Enum.Font.GothamBold
-title.TextSize = 28
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Parent = panel
-            </pre>
-            <button class="copy-btn" onclick="copyCode(0)">Копировать</button>
-        </div>
-
-        <!-- Скрипт 2 -->
-        <div class="subfolder">
-            <div class="subfolder-title">Скрипт 2 (LocalScript в StarterGui)</div>
-            <pre id="code-1">
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
-local remote = ReplicatedStorage:WaitForChild("AdminPanelEvent")
-
-local function showAd(message)
-    local gui = LocalPlayer:WaitForChild("PlayerGui")
-    local adGui = gui:FindFirstChild("AdMessageGui")
-    if not adGui then
-        adGui = Instance.new("ScreenGui")
-        adGui.Name = "AdMessageGui"
-        adGui.ResetOnSpawn = false
-        adGui.Parent = gui
-    end
-    local label = adGui:FindFirstChild("AdLabel")
-    if not label then
-        label = Instance.new("TextLabel")
-        label.Name = "AdLabel"
-        label.Size = UDim2.new(0.7, 0, 0, 60)
-        label.Position = UDim2.new(0.15, 0, 0, 20)
-        label.BackgroundColor3 = Color3.fromRGB(0,0,0)
-        label.BackgroundTransparency = 0.3
-        label.TextColor3 = Color3.fromRGB(255,255,0)
-        label.Font = Enum.Font.GothamBold
-        label.TextSize = 32
-        label.TextStrokeTransparency = 0.3
-        label.TextStrokeColor3 = Color3.fromRGB(0,0,0)
-        label.TextWrapped = true
-        label.Parent = adGui
-    end
-    label.Text = message
-    label.Visible = true
-    task.wait(8)
-    label.Visible = false
-end
-
-remote.OnClientEvent:Connect(function(data)
-    if data and data.action == "broadcast" and data.message then
-        showAd(data.message)
-    end
-end)
-            </pre>
-            <button class="copy-btn" onclick="copyCode(1)">Копировать</button>
-        </div>
-
-        <!-- Скрипт 3 (Script в ServerScriptServer -->
-        <div class="subfolder">
-            <div class="subfolder-title">Скрипт 3(Script в ServerScriptServer)</div>
-            <pre id="code-2">
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Players = game:GetService("Players")
-
-local ADMIN_USERNAME = "BodrosikXX"
-
-local remote = ReplicatedStorage:WaitForChild("AdminPanelEvent")
-
-remote.OnServerEvent:Connect(function(player, data)
-    if not data or type(data) ~= "table" then return end
-    if player.Name ~= ADMIN_USERNAME then return end
-
-    if data.action == "broadcast" and data.message then
-        for _, plr in Players:GetPlayers() do
-            remote:FireClient(plr, {action="broadcast", message=data.message})
-        end
-    elseif data.action == "give" and data.player and data.amount then
-        for _, plr in Players:GetPlayers() do
-            if plr.Name == data.player then
-                local leaderstats = plr:FindFirstChild("leaderstats")
-                if leaderstats then
-                    local balance = leaderstats:FindFirstChild("Balance")
-                    if balance then
-                        balance.Value = balance.Value + data.amount
-                    end
-                end
-            end
-        end
-    end
-end)
-            </pre>
-            <button class="copy-btn" onclick="copyCode(2)">Копировать</button>
-        </div>
-
-    </div>
+<div class="footer">
+  <span class="logo">#ByBodrosikScript</span> © 2025
 </div>
 
 <script>
-function toggleFolder(header) {
-    const content = header.nextElementSibling;
-    if (content.style.display === "block") {
-        content.style.display = "none";
-        header.innerText = header.innerText.replace('▲','▼');
-    } else {
-        content.style.display = "block";
-        header.innerText = header.innerText.replace('▼','▲');
-    }
+const container = document.getElementById("folderContainer");
+
+for (let i = 1; i <= 60; i++) {
+  const folder = document.createElement("div");
+  folder.className = "folder";
+
+  const title = document.createElement("div");
+  title.className = "folder-title";
+  title.textContent = i === 1 ? `📁 Смена дня и ночи` : `📁 Папка ${i} (пусто)`;
+
+  const content = document.createElement("div");
+  content.className = "folder-content";
+
+  if (i === 1) {
+    content.innerHTML = `
+      <h3 style="color:#00ffc6;">Смена дня и ночи 🌞🌙</h3>
+      <p>Этот скрипт создаёт плавный переход между днём и ночью в Lighting.</p>
+      <pre style="color:#00ffc6; background:#000; padding:10px; border-radius:8px;">
+local Lighting = game:GetService("Lighting")
+
+local dayTime = 14 
+local nightTime = 0 
+local holdDuration = 5 
+local transitionDuration = 30 
+local transitionSteps = 60 
+
+Lighting.ClockTime = dayTime
+task.wait(holdDuration)
+
+while true do
+    for i = 0, transitionSteps do
+        local alpha = i / transitionSteps
+        Lighting.ClockTime = dayTime + (nightTime - dayTime) * alpha
+        task.wait(transitionDuration / transitionSteps)
+    end
+    Lighting.ClockTime = nightTime
+    task.wait(holdDuration)
+
+    for i = 0, transitionSteps do
+        local alpha = i / transitionSteps
+        Lighting.ClockTime = nightTime + (dayTime - nightTime) * alpha
+        task.wait(transitionDuration / transitionSteps)
+    end
+    Lighting.ClockTime = dayTime
+    task.wait(holdDuration)
+end
+      </pre>
+
+      <div class="copy-block">
+        <div class="copy-item">
+          <span class="copy-text">Номер 1 — Скрипт смены дня и ночи</span>
+          <button class="copy-btn" data-copy="local Lighting = game:GetService('Lighting') ...">Скопировать</button>
+        </div>
+      </div>
+    `;
+  } else {
+    content.innerHTML = `
+      <h3 style="color:#00ffc6;">Пусто 📂</h3>
+      <p>Добавь сюда свой тутор.</p>
+      <div class="copy-block">
+        <div class="copy-item">
+          <span class="copy-text">Номер ${i}</span>
+          <button class="copy-btn" data-copy="Пусто">Скопировать</button>
+        </div>
+      </div>
+    `;
+  }
+
+  folder.appendChild(title);
+  folder.appendChild(content);
+
+  folder.addEventListener("click", () => {
+    const visible = content.style.display === "block";
+    document.querySelectorAll(".folder-content").forEach(c => c.style.display = "none");
+    content.style.display = visible ? "none" : "block";
+  });
+
+  container.appendChild(folder);
 }
 
-function copyCode(index) {
-    const code = document.getElementById('code-' + index).innerText;
-    navigator.clipboard.writeText(code).then(() => {
-        alert('Код скопійовано в буфер обміну!');
-    }).catch(err => {
-        alert('Помилка при копіюванні: ' + err);
-    });
-}
+// ✨ Кнопка "Скопировать"
+document.addEventListener("click", e => {
+  if (e.target.classList.contains("copy-btn")) {
+    const text = e.target.getAttribute("data-copy");
+    navigator.clipboard.writeText(text);
+    e.target.textContent = "✅ Скопировано!";
+    setTimeout(() => (e.target.textContent = "Скопировать"), 1500);
+    e.stopPropagation();
+  }
+});
 </script>
-
 </body>
 </html>
