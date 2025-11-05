@@ -11,6 +11,7 @@
     color: #fff;
     margin: 0;
     padding: 40px;
+    overflow-x: hidden;
   }
 
   h1 {
@@ -25,6 +26,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 20px;
+    transition: opacity 0.3s ease;
   }
 
   .folder {
@@ -47,21 +49,53 @@
     color: #00ffc6;
   }
 
-  .folder-content {
+  /* === Повноекранне вікно === */
+  .fullview {
+    position: fixed;
+    inset: 0;
+    background: #0b0b0d;
+    padding: 40px;
+    overflow-y: auto;
     display: none;
-    margin-top: 15px;
-    background: #111113;
-    border-radius: 10px;
-    padding: 15px;
-    line-height: 1.5;
-    font-size: 15px;
-    box-shadow: inset 0 0 10px #000;
+    flex-direction: column;
+    justify-content: flex-start;
+    animation: fadeIn 0.3s ease;
+    z-index: 100;
   }
 
-  .copy-block {
-    margin-top: 20px;
-    border-top: 1px solid #222;
-    padding-top: 10px;
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fullview h2 {
+    color: #00ffc6;
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+
+  .fullview pre {
+    background: #000;
+    color: #00ffc6;
+    padding: 12px;
+    border-radius: 10px;
+    overflow-x: auto;
+  }
+
+  .back-btn {
+    background: #00ffc6;
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 20px;
+    align-self: flex-start;
+  }
+
+  .back-btn:hover {
+    background: #00a382;
   }
 
   .copy-item {
@@ -71,7 +105,7 @@
     background: #151517;
     border-radius: 8px;
     padding: 10px;
-    margin-top: 8px;
+    margin-top: 15px;
   }
 
   .copy-text {
@@ -112,12 +146,21 @@
 <h1>#ByBodrosikScript — Туторы</h1>
 <div class="container" id="folderContainer"></div>
 
+<!-- Повноекранне вікно -->
+<div class="fullview" id="fullView">
+  <button class="back-btn" id="backBtn">← Назад</button>
+  <div id="fullContent"></div>
+</div>
+
 <div class="footer">
   <span class="logo">#ByBodrosikScript</span> © 2025
 </div>
 
 <script>
 const container = document.getElementById("folderContainer");
+const fullView = document.getElementById("fullView");
+const fullContent = document.getElementById("fullContent");
+const backBtn = document.getElementById("backBtn");
 
 for (let i = 1; i <= 60; i++) {
   const folder = document.createElement("div");
@@ -127,14 +170,20 @@ for (let i = 1; i <= 60; i++) {
   title.className = "folder-title";
   title.textContent = i === 1 ? `📁 Смена дня и ночи` : `📁 Папка ${i} (пусто)`;
 
-  const content = document.createElement("div");
-  content.className = "folder-content";
+  folder.appendChild(title);
+  container.appendChild(folder);
 
-  if (i === 1) {
-    content.innerHTML = `
-      <h3 style="color:#00ffc6;">Смена дня и ночи 🌞🌙</h3>
-      <p>Этот скрипт создаёт плавный переход между днём и ночью в Lighting.</p>
-      <pre style="color:#00ffc6; background:#000; padding:10px; border-radius:8px;">
+  folder.addEventListener("click", () => {
+    container.style.opacity = "0";
+    setTimeout(() => {
+      container.style.display = "none";
+      fullView.style.display = "flex";
+      fullContent.innerHTML =
+        i === 1
+          ? `
+          <h2>Смена дня и ночи 🌞🌙</h2>
+          <p>Этот скрипт создаёт плавный переход между днём и ночью в Lighting.</p>
+          <pre>
 local Lighting = game:GetService("Lighting")
 
 local dayTime = 14 
@@ -163,48 +212,37 @@ while true do
     Lighting.ClockTime = dayTime
     task.wait(holdDuration)
 end
-      </pre>
-
-      <div class="copy-block">
-        <div class="copy-item">
-          <span class="copy-text">Номер 1 — Скрипт смены дня и ночи</span>
-          <button class="copy-btn" data-copy="local Lighting = game:GetService('Lighting') ...">Скопировать</button>
-        </div>
-      </div>
-    `;
-  } else {
-    content.innerHTML = `
-      <h3 style="color:#00ffc6;">Пусто 📂</h3>
-      <p>Добавь сюда свой тутор.</p>
-      <div class="copy-block">
-        <div class="copy-item">
-          <span class="copy-text">Номер ${i}</span>
-          <button class="copy-btn" data-copy="Пусто">Скопировать</button>
-        </div>
-      </div>
-    `;
-  }
-
-  folder.appendChild(title);
-  folder.appendChild(content);
-
-  folder.addEventListener("click", () => {
-    const visible = content.style.display === "block";
-    document.querySelectorAll(".folder-content").forEach(c => c.style.display = "none");
-    content.style.display = visible ? "none" : "block";
+          </pre>
+          <div class="copy-item">
+            <span class="copy-text">Номер 1 — Смена дня и ночи</span>
+            <button class="copy-btn" data-copy="local Lighting = game:GetService('Lighting') ...">Скопировать</button>
+          </div>
+          `
+          : `
+          <h2>Папка ${i}</h2>
+          <p>Пусто. Добавь сюда свой тутор.</p>
+          <div class="copy-item">
+            <span class="copy-text">Номер ${i}</span>
+            <button class="copy-btn" data-copy="Пусто">Скопировать</button>
+          </div>
+          `;
+    }, 200);
   });
-
-  container.appendChild(folder);
 }
 
-// ✨ Кнопка "Скопировать"
-document.addEventListener("click", e => {
+backBtn.addEventListener("click", () => {
+  fullView.style.display = "none";
+  container.style.display = "grid";
+  setTimeout(() => (container.style.opacity = "1"), 100);
+});
+
+// Копіювання
+document.addEventListener("click", (e) => {
   if (e.target.classList.contains("copy-btn")) {
     const text = e.target.getAttribute("data-copy");
     navigator.clipboard.writeText(text);
     e.target.textContent = "✅ Скопировано!";
     setTimeout(() => (e.target.textContent = "Скопировать"), 1500);
-    e.stopPropagation();
   }
 });
 </script>
